@@ -111,8 +111,8 @@ class Shoe:
 # print(len(Shoe.get_shuffled_shoe(8)))
 # print(Shoe.get_shuffled_shoe(8))
 
-test = Shoe(8, .99)
-print(len(test.deck))
-print(test.deal_one())
-print(len(test.deck))
+# test = Shoe(8, .99)
+# print(len(test.deck))
+# print(test.deal_one())
+# print(len(test.deck))
 # print(test)
