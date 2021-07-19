@@ -65,21 +65,23 @@ class Shoe:
                 Card('a', 'h'), Card('k', 'h'), Card('q', 'h'), Card('j', 'h'), Card('10', 'h'), Card('9', 'h'), Card('8', 'h'), Card('7', 'h'), Card('6', 'h'), Card('5', 'h'), Card('4', 'h'), Card('3', 'h'), Card('2', 'h'),
         ]
 
-    # returns a new shuffled shoe without a cut card of deck len num_decks
-
     @staticmethod
     def random_insert(lst, item):
         lst.insert(randrange(len(lst)+1), item)
 
+    # returns a shuffled list of Cards containing n of decks
+    # Note: does not include the cut card
     @staticmethod
     def get_shuffled_shoe(num_decks: int):
         deck = []
 
+        # makes list of n ordered decks
         for i in range(num_decks):
             for card in Shoe.get_ordered_deck():
                 deck.append(card)
 
-        # need each card to be uniquely identifiable to shuffle them correctly
+        # need each card needs to be uniquely identifiable to shuffle them correctly
+        # here we just tuple each card with a uid
         deck_with_UIDs = []
         uid = 0
         for card in deck:
@@ -90,10 +92,10 @@ class Shoe:
 
         # To shuffle the decks, we look at the bottom card of the deck
         # and memorize it. Take the top card of the deck and look at it. Is
-        # that card the card that was originally on the bottom? No?
-        # Put it into the deck randomly.
+        # the top card the same as the bottom card? No?
+        # Put the top card into the deck randomly.
         # Repeat until you find the original bottom card.
-        # Then, place that card into the deck randomly.
+        # Then, place the original bottom card into the deck randomly.
         # BAM you got a shuffled deck.
 
         # note: Python's random method seeds based on system time
