@@ -31,12 +31,16 @@ class Shoe:
     # Note: the float is exact, so if you want to mimic a semirandom
     # cut_card_placement of range 0.70-0.80, then you must generate your own
     # random float before calling this constructor
+
+    # cut_card_placement: 0.0 means top of deck
+    # cut_card_placement: 1.0 means last card in the deck
     def __init__(self, num_decks: int, cut_card_placement: float):
         if num_decks <= 0:
             raise InvalidDeckNumber(f"Please enter a valid number of decks, you gave: {num_decks}")
         Shoe.deck = Shoe.get_shuffled_shoe(num_decks)
-        # need to add a cut card to the deck here
-        index_of_cut_card = int(cut_card_placement * len(Shoe.deck))
+        # note: the top of the deck is the last index in the list,
+        # so for index reasons, we need a (1 - cut_card_placement)
+        index_of_cut_card = int((1 - cut_card_placement) * len(Shoe.deck))
         Shoe.deck.insert(index_of_cut_card, Card('C', 't'))
 
     def __str__(self):
@@ -111,8 +115,8 @@ class Shoe:
 # print(len(Shoe.get_shuffled_shoe(8)))
 # print(Shoe.get_shuffled_shoe(8))
 
-# test = Shoe(8, .99)
-# print(len(test.deck))
-# print(test.deal_one())
-# print(len(test.deck))
-# print(test)
+# test1 = Shoe(8, 0)
+# print(len(test1.deck))
+# print(test1.deal_one())
+# print(len(test1.deck))
+# print(test1)
