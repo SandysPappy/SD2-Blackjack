@@ -25,15 +25,25 @@ class Card:
         return str(self)
 
 class Shoe:
-    # returns a shoe containing num_decks with the cut card at the index
-    # represented by the float cut_card_placement. Typlically this is 0.75
-    # at a real casino and 0.50 at an online casino.
+
+    # Example
+    # new_shoe = Shoe(8, 0.75)
+    # first_dealt_card = new_shoe.deal_one()
+
+    # Once the cut card is dealt, keep dealing out that round,
+    # then replace the shoe with a new shoe.
+
+    # Returns None if the deck is empty
+
+    # Shoe contains num_decks with the cut card at the index
+    # represented by the float cut_card_placement. Typically this is 0.75
+    # at a real 8 deck casino and 0.50 at an online casino.
     # Note: the float is exact, so if you want to mimic a semirandom
     # cut_card_placement of range 0.70-0.80, then you must generate your own
     # random float before calling this constructor
 
-    # cut_card_placement: 0.0 means top of deck
-    # cut_card_placement: 1.0 means last card in the deck
+    # cut_card_placement: 0.0 means top of deck (first card delt)
+    # cut_card_placement: 1.0 means last card in the deck (last card delt)
     def __init__(self, num_decks: int, cut_card_placement: float):
         if num_decks <= 0:
             raise InvalidDeckNumber(f"Please enter a valid number of decks, you gave: {num_decks}")
@@ -122,3 +132,4 @@ class Shoe:
 # print(test1.deal_one())
 # print(len(test1.deck))
 # print(test1)
+# print(type(Shoe(8, 0.7).deal_one()))
