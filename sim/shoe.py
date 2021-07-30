@@ -1,28 +1,8 @@
+from card import Card
 from random import randrange
-
-class InvalidCardInitalization(ValueError):
-  pass
 
 class InvalidDeckNumber(ValueError):
   pass
-
-class Card:
-    # Card('A', 's')
-    # s -> spades, h -> hearts, c -> clubs, d -> diamonds
-    # 2-10, J, Q, K, A
-    # Card('C', 't') represents cut card because im lazy
-    def __init__(self, card_face: str, suit: str):
-        # still allows for any character to be initalized in a card
-        if type(card_face) != str or type(suit) != str or len(card_face) > 2 or len(suit) != 1:
-            raise InvalidCardInitalization(f"Please enter a valid card, you gave: {card_face}{suit}")
-        self.card_face = card_face.upper()
-        self.suit = suit.lower()
-
-    def __str__(self):
-        return f"{self.card_face}{self.suit}"
-
-    def __repr__(self):
-        return str(self)
 
 class Shoe:
 
@@ -123,13 +103,3 @@ class Shoe:
         # removing uids since the deck is now shuffled
         shoe_with_uids_removed = [card[1] for card in deck_with_UIDs]
         return shoe_with_uids_removed
-
-# print(len(Shoe.get_shuffled_shoe(8)))
-# print(Shoe.get_shuffled_shoe(8))
-
-# test1 = Shoe(8, 0)
-# print(len(test1.deck))
-# print(test1.deal_one())
-# print(len(test1.deck))
-# print(test1)
-# print(type(Shoe(8, 0.7).deal_one()))
