@@ -14,10 +14,13 @@ class Dealer:
     def get_up_card(self):
         if self.hand.hand == []:
             return None
-        return self.hand[0]
+        return self.hand.hand[0]
 
     def receive_card(self, card):
         self.hand.add_card(card)
+
+    def get_hand(self):
+        return self.hand
 
     def clear_hand(self):
         self.hand.clear_hand()

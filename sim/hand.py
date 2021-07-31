@@ -1,5 +1,8 @@
 from card import Card
 
+class GameLogicError(Exception):
+    pass
+
 class Hand:
     def __init__(self, cards_list=None):
         if cards_list is None:
@@ -19,6 +22,12 @@ class Hand:
     def clear_hand(self):
         self.hand.clear()
 
+    def has_ace(self):
+        for card in self.hand:
+            if card.is_ace():
+                return True
+        return False
+
     def is_pair(self):
         if len(self.hand) != 2:
             return False
@@ -37,9 +46,12 @@ class Hand:
                 return True
         return False
 
-# otherwise returns a tuple giving the hand type
+# returns a tuple giving the hand type
 # and the hand value as a string
     def get_hand_value(self):
+        if self.hand == []:
+            return None
+
         if self.is_pair():
             if self.hand[0].is_ace():
                 return ('pair', 'A')
@@ -60,3 +72,48 @@ class Hand:
         if total_value + num_aces-1 + 11 > 21:
             return ('hard', str(total_value + num_aces))
         return ('soft', str(total_value + num_aces-1 + 11))
+
+    # returns   'blackjack'
+    #           'win'
+    #           'lose'
+    #           'push'
+    def get_hand_result(self, dealer_hand):
+
+        dealer_hand_value_tuple = dealer_hand.get_hand_value()
+
+        if dealer_hand_value_tuple == ('pair', 'A'):
+            raise GameLogicError('Dealer was suppose to hit on a soft 12 (pair of aces)')
+
+        dealer_hand_value = int(dealer_hand_value_tuple[1])
+
+        if dealer_hand_value < 17:
+            raise GameLogicError(f"Dealer was suppose to hit on {dealer_hand_value}")
+
+        # get_hand_value() can return ('pair', 'A')
+        # The only time get_hand_result is called with a pair of Aces
+        # is after you split an Ace and get another Ace
+        # If we get to this point, we can no longer resplit the ace or hit again,
+        # Therefore, the hand value is a 12 (11 + 1)
+        if self.get_hand_value() == ('pair', 'A'):
+            player_hand_value = 12
+
+        else:
+            player_hand_value = int((self.get_hand_value())[1])
+
+        if player_hand_value > 21:
+            return 'lose'
+
+        if dealer_hand_value > 21:
+            return 'win'
+
+        if self.is_blackjack():
+            if dealer_hand.is_blackjack():
+                return 'push'
+            return 'blackjack'
+
+        if player_hand_value == dealer_hand_value:
+            return 'push'
+
+        if player_hand_value > dealer_hand_value:
+            return 'win'
+        return 'lose'

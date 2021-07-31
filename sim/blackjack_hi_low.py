@@ -16,10 +16,10 @@ class Table:
         self.shoe = Shoe(num_decks, deck_pen)
 
         self.player_list = [None] * 7
+        self.dealer = Dealer()
 
         self.count = {'running_count': 0, 'true_count': 0}
         self.strategy = basic_strategy.get_basic_strategy()
-        self.dealer = Dealer()
         self.min_bet = min_bet
         self.max_bet = max_bet
 

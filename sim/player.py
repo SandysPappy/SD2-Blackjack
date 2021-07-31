@@ -16,6 +16,12 @@ class Player():
     def __repr__(self):
         return f"<Player id={self._id}, stack_size={self.stack_size}, hand:{self.hand}>"
 
+    def receive_card(self, card):
+        self.hand.add_card(card)
+
+    def clear_hand(self):
+        self.hand.clear_hand()
+
     def add_dollars(self, ammount):
         self.stack_size += ammount
 
