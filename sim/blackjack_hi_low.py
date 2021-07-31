@@ -3,10 +3,10 @@ from hand import Hand
 from card import Card
 from player import Player
 from dealer import Dealer
-import basic_strategy
+from math import floor
+import basic_strategy as bs
+import count_map as cm
 
-class InvalidSeat(IndexError):
-    pass
 
 # we're forcing players to only bet on one spot
 class Table:
@@ -18,10 +18,12 @@ class Table:
         self.player_list = [None] * 7
         self.dealer = Dealer()
 
-        self.count = {'running_count': 0, 'true_count': 0}
-        self.strategy = basic_strategy.get_basic_strategy()
+        self.running_count = 0
+        self.true_count = 0
+        self.strategy = bs.get_basic_strategy()
         self.min_bet = min_bet
         self.max_bet = max_bet
+        self.count_map = cm.get_hi_low_map()
 
     def __str__(self):
         string = "Game state\n"
@@ -30,8 +32,8 @@ class Table:
         string += f"max bet is {self.max_bet}\n"
         string += "\n"
 
-        string += f"Running count: {self.count['running_count']}\n"
-        string += f"True count: {self.count['true_count']}\n"
+        string += f"Running count: {self.running_count}\n"
+        string += f"True count: {self.true_count}\n"
         string += "\n"
 
         string += f"Dealer's upcard: {self.dealer.get_up_card()}\n"
@@ -50,6 +52,39 @@ class Table:
 
         return string
 
+    def deal_card(self, player):
+        curr_card = self.shoe.deal_one()
+        self.running_count += self.count_map[curr_card.card_face]
+        self.true_count = floor(self.running_count / self.shoe.get_decks_left())
+
+        if isinstance(player, Player):
+            player.receive_card(curr_card)
+
+        if isinstance(player, Dealer):
+            player.receive_card(curr_card)
+
+    def deal_inital_round(self):
+        self.clear_table()
+        for i in range(2):
+            for player in self.player_list:
+                if player is None:
+                    continue
+                self.deal_card(player)
+            self.deal_card(self.dealer)
+
+    def clear_table(self):
+        if self.shoe.cut_card_reached:
+            self.replace_shoe(self.num_decks, self.deck_pen)
+        for player in self. player_list:
+            if player is None:
+                continue
+            player.clear_hand()
+            player.clear_bet()
+        self.dealer.clear_hand()
+
+
+
+
     # example
     # list_of_ids_and_stack_sizes = [(0, 5000), (87, 10000), (2, 4000)]
     @staticmethod
@@ -59,16 +94,21 @@ class Table:
             list.append(Player(tuple[0], tuple[1]))
         return list
 
-    # overwrites player index, be careful
-    def take_seat(self, index, player):
-        if index < 0 or index > 6:
-            raise InvalidSeat(f" please insert a seat position between 0 and 6, you gave: {index}")
-        self.player_list[index] = player
-
     def replace_shoe(self, num_decks, deck_pen):
         self.num_decks = num_decks
         self.deck_pen = deck_pen
         self.shoe = Shoe(num_decks, deck_pen)
+
+    def play_turn(self, player):
+        bs = basic_strategy.get_basic_strategy()
+
+        curr_hand = self.hand.get_hand_value()
+        hand_type = curr_hand[0]
+        hand_value = curr_hand[1]
+
+        action = bs[hand_type][(hand_value, up_card_face)]
+
+        print(f"With a {curr_hand} and a dealer upcard of {up_card_face}, player {self._id} should {action}")
 
 
 # add_player(0, 5000)

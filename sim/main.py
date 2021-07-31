@@ -1,6 +1,7 @@
 from blackjack_hi_low import Table
 from player import Player
 from dealer import Dealer
+from bet_spread import get_what_to_bet
 
 num_decks = 8
 deck_pen = 0.75
@@ -23,22 +24,26 @@ game = Table(num_decks, deck_pen, min_bet, max_bet)
 # game.take_seat(1, Player(6, 543))
 
 player = Player(69, 5000)
-dealer = Dealer()
+player.take_seat(0, game)
 
-for i in range(200):
-    player.receive_card(game.shoe.deal_one())
-    player.receive_card(game.shoe.deal_one())
+for i in range(79):
+    game.deal_inital_round()
 
-    game.dealer.receive_card(game.shoe.deal_one())
-    game.dealer.receive_card(game.shoe.deal_one())
 
-    hand_result = player.get_hand().get_hand_result(game.dealer.get_hand())
-    print(f"dealer hand: {game.dealer.hand.get_hand_value()}")
-    print(f"player hand: {player.hand.get_hand_value()}")
-    print(hand_result)
-
-    game.dealer.clear_hand()
-    player.clear_hand()
+# for i in range(200):
+#     player.receive_card(game.shoe.deal_one())
+#     player.receive_card(game.shoe.deal_one())
+#
+#     game.dealer.receive_card(game.shoe.deal_one())
+#     game.dealer.receive_card(game.shoe.deal_one())
+#
+#     hand_result = player.get_hand().get_hand_result(game.dealer.get_hand())
+#     print(f"dealer hand: {game.dealer.hand.get_hand_value()}")
+#     print(f"player hand: {player.hand.get_hand_value()}")
+#     print(hand_result)
+#
+#     game.dealer.clear_hand()
+#     player.clear_hand()
 
 
 print(game)
