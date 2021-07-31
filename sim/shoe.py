@@ -27,14 +27,16 @@ class Shoe:
     def __init__(self, num_decks: int, cut_card_placement: float):
         if num_decks <= 0:
             raise InvalidDeckNumber(f"Please enter a valid number of decks, you gave: {num_decks}")
-        Shoe.deck = Shoe.get_shuffled_shoe(num_decks)
+        self.deck = Shoe.get_shuffled_shoe(num_decks)
         # note: the top of the deck is the last index in the list,
         # so for index reasons, we need a (1 - cut_card_placement)
-        index_of_cut_card = int((1 - cut_card_placement) * len(Shoe.deck))
-        Shoe.deck.insert(index_of_cut_card, Card('C', 't'))
+        index_of_cut_card = int((1 - cut_card_placement) * len(self.deck))
+        self.deck.insert(index_of_cut_card, Card('C', 't'))
+        self.cut_card_reached = False
+        self.decks_left = self.get_decks_left()
 
     def __str__(self):
-        return str(Shoe.deck)
+        return str(self.deck)
 
     def __repr__(self):
         return str(self)
@@ -42,7 +44,19 @@ class Shoe:
     def deal_one(self):
         if len(self.deck) <= 0:
             return None
-        return self.deck.pop()
+
+        curr_card = self.deck.pop()
+
+        if curr_card.card_face == 'C':
+            self.cut_card_reached = True
+            curr_card = self.deck.pop()
+
+        return curr_card
+
+    def get_decks_left(self):
+        if self.cut_card_reached:
+            return len(self.deck) / 52
+        return (len(self.deck) - 1) / 52
 
     # This should never be touched again, sorry it's gross looking
     # Returns a list of 52 unique Cards in order

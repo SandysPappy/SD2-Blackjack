@@ -10,6 +10,9 @@ class Hand:
     def __str__(self):
         return str([card for card in self.hand])
 
+    def __repr__(self):
+        return f"<Hand {self.hand}>"
+
     def add_card(self, card):
         self.hand.append(card)
 

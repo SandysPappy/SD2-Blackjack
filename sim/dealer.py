@@ -11,6 +11,11 @@ class Dealer:
     def __repr__(self):
         return f"<Dealer hand: {self.hand}>"
 
+    def get_up_card(self):
+        if self.hand.hand == []:
+            return None
+        return self.hand[0]
+
     def receive_card(self, card):
         self.hand.add_card(card)
 

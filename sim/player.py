@@ -11,16 +11,19 @@ class Player():
         self.hand = Hand()
 
     def __str__(self):
-        return f"id:{self._id}, stack_size:{self.stack_size}"
+        return f"id:{self._id}, stack_size:{self.stack_size}, hand:{self.hand}"
 
     def __repr__(self):
-        return f"<Player id={self._id}, stack_size={self.stack_size}>"
+        return f"<Player id={self._id}, stack_size={self.stack_size}, hand:{self.hand}>"
 
     def add_dollars(self, ammount):
         self.stack_size += ammount
 
     def subtract_dollars(self, ammount):
         self.stack_size -= ammount
+
+    def get_hand(self):
+        return self.hand
 
     # is only called when a hand has been dealt
     def do_turn(self, up_card_face):
