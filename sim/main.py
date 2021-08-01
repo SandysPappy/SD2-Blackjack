@@ -4,44 +4,46 @@ from dealer import Dealer
 from card import Card
 from hand import Hand
 
+def profit_percent(begin_ammount, end_ammount):
+    return ((end_ammount - begin_ammount) / end_ammount) * 100
+
+def get_player_average_bankroll(player_list):
+    avg = 0
+    total = 0
+    num_players = 0
+    for player in player_list:
+        if player:
+            total += player.stack_size
+            num_players += 1
+
+    return total / len(player_list)
+
 num_decks = 8
 deck_pen = 0.75
 min_bet = 10
 max_bet = 1000
-total_rounds_played = 10000
 
-rounds_per_hour = 90
+total_rounds_played = 100000
+start_stack_size = 100000
+betting_units = 25
 
 game = Table(num_decks, deck_pen, min_bet, max_bet)
+player_list = []
 
-def profit_percent(begin_ammount, end_ammount):
-    return ((end_ammount - begin_ammount) / end_ammount) * 100
+for i in range(7):
+    player_list.append(Player(i, start_stack_size, betting_units))
 
-player1 = Player(1, 100000, 5)
-player2 = Player(2, 100000, 5)
-player3 = Player(3, 100000, 5)
-player6 = Player(4, 100000, 5)
-
-player1.take_seat(0, game)
-player2.take_seat(5, game)
-player3.take_seat(2, game)
-player6.take_seat(3, game)
-
-player1_original_stack = player1.stack_size
-player2_original_stack = player2.stack_size
-player3_original_stack = player3.stack_size
-player6_original_stack = player6.stack_size
+for i in range(7):
+    player_list[i].take_seat(i, game)
 
 print(game)
-
 game.play_n_rounds(total_rounds_played)
-
 print(game)
 
-print(f"After {total_rounds_played} rounds played")
+avg_end_stack = get_player_average_bankroll(player_list)
 
-print(f"Player1 started with {player1_original_stack} and ended with {player1.stack_size}")
-print(f"Thats a change of {round(profit_percent(player1_original_stack, player1.stack_size), 2)}%")
 
-print(f"Player2 started with {player2_original_stack} and ended with {player2.stack_size}")
-print(f"Thats a change of {round(profit_percent(player2_original_stack, player2.stack_size), 2)}%")
+print(f"\nAfter {total_rounds_played} rounds played\n")
+
+print(f"Average stack is ${avg_end_stack}\n")
+print(f"Which leads to an average change of {round(profit_percent(start_stack_size, avg_end_stack), 2)}%")

@@ -9,16 +9,14 @@ import count_map as cm
 
 MIN_NUM_BETTING_UNITS_ALLOWED = 4
 MAX_NUM_OF_SPLITS_ALLOWED = 3
+LEAVE_THE_TABLE_ON_THIS_COUNT_TRUE_COUNT = -2
 
 #####################
 # TODO
 #
-#   Rewrite the entire play_round and play_turn.
-#   Basically need to rewrite this whole class lmao
+#  remove player from table if they bankrupt instead of throwing an error
 #
-#   rename the take and pay functions
-#
-# - Make it so the dealer hits on a soft 17
+# - Make it so the dealer hits on a soft 17 to better match vegas rules
 # - Allow doubledown after split
 # - Players currently bet their base betting_unit instead of table minimum at true count of 1 and below,
 #   so we need an option to force betting the table minimum instead of base betting unit.
@@ -90,21 +88,25 @@ class Table:
 
         return string
 
-    # which_hand is for the index of hand to deal to during a split hand
-    def deal_card(self, player, which_hand=None):
+
+    # returns a card popped off the shoe and updates the count accordingly
+    # which_hand is for the index of the player hand to deal to during a split hand
+    # if which_hand is None, player has 1 hand
+    def deal_card(self, player_or_dealer_object, which_hand=None):
         curr_card = self.shoe.deal_one()
         self.running_count += self.count_map[curr_card.card_face]
         self.true_count = floor(self.running_count / self.shoe.get_decks_left())
 
-        if isinstance(player, Player):
+        if isinstance(player_or_dealer_object, Player):
             if which_hand is None:
-                player.receive_card(curr_card)
+                player_or_dealer_object.receive_card(curr_card)
             else:
-                player.receive_card(curr_card, which_hand)
+                player_or_dealer_object.receive_card(curr_card, which_hand)
 
-        if isinstance(player, Dealer):
-            player.receive_card(curr_card)
+        if isinstance(player_or_dealer_object, Dealer):
+            player_or_dealer_object.receive_card(curr_card)
 
+    # assuming all players are card counters
     def set_all_player_bets(self):
         for player in self.player_list:
             if player:
@@ -116,7 +118,6 @@ class Table:
         for player in self.player_list:
             if player:
                 self.play_turn(player)
-
 
     def play_n_rounds(self, n):
         for i in range(n):
@@ -150,9 +151,9 @@ class Table:
     def play_dealer_turn(self):
         _, hand_value = self.dealer.get_hand().get_hand_value()
 
-        # pair of aces which is a soft 12
+        # must account for pair of aces which is a soft 12
         while hand_value == 'A' or int(hand_value) < 17:
-            self.dealer.receive_card(self.shoe.deal_one())
+            self.deal_card(self.dealer)
             _, hand_value = self.dealer.get_hand().get_hand_value()
 
         # print(f"dealers hand: {hand_value}")
@@ -200,9 +201,6 @@ class Table:
                             player.give_money_to_player(player.curr_bet)
                             continue
 
-
-
-
     def deal_inital_round(self):
         self.clear_table()
         for i in range(2):
@@ -218,7 +216,7 @@ class Table:
             if player:
                 player.clear_hands()
 
-        if self.shoe.cut_card_reached:
+        if self.shoe.cut_card_reached or self.true_count <= LEAVE_THE_TABLE_ON_THIS_COUNT_TRUE_COUNT:
             self.replace_shoe(self.num_decks, self.deck_pen)
             self.true_count = 0
             self.running_count = 0
@@ -261,14 +259,19 @@ class Table:
 
             action = self.strategy[hand_type][(hand_value, self.dealer.get_up_card().card_face)]
 
-            # print(f"Player:{player._id} has a {hand_type} {hand_value} with a dealer upcard of {self.dealer.get_up_card()} and should {action}")
+            # print(f"Running count is: {self.running_count},\tTrue count is: {self.true_count},\tPlayer:{player._id} has a {hand_type} {hand_value} with a dealer upcard of {self.dealer.get_up_card()} and should {action}")
+
 
             if action == 'SPLIT':
+                # removes the current single hand, and creates two hands each with one card
+                # also adds 1 to player.num_splits
                 player.split_hand(0)
 
-                player.receive_card(self.shoe.deal_one(), 0)
-                player.receive_card(self.shoe.deal_one(), 1)
+                # deal a new card into each new hand
+                self.deal_card(player, 0)
+                self.deal_card(player, 1)
 
+                # plays the turn for each hand with player.num_splits updated
                 self.play_turn(player, 0)
                 self.play_turn(player, 1)
 
@@ -282,12 +285,12 @@ class Table:
             if action == 'DOUBLE':
                 player.doubled_this_round = True
                 player.take_money_from_player(player.curr_bet)
-                player.receive_card(self.shoe.deal_one())
+                self.deal_card(player)
                 return
 
             # note: after hitting, we dont have to worry about splits or doubles anymore
             if action == 'HIT':
-                player.receive_card(self.shoe.deal_one())
+                self.deal_card(player)
                 self.play_turn(player)
 
                 return
@@ -312,23 +315,27 @@ class Table:
         # can only split 3 total times
         # happens when player splits again
         if action == 'SPLIT':
-            # the rare soft 12
-            if hand_value == 'A':
-                hand_type = 'soft'
-                hand_value = '12'
-                action = 'HIT'
-            elif player.times_split >= 3:
+            if player.times_split >= 3:
                 hand_type = 'hard'
                 hand_value = player.get_hand(current_hand_index).get_pairs_hard_hand_value()
                 action = self.strategy[hand_type][(str(hand_value), self.dealer.get_up_card().card_face)]
+            # the rare soft 12
+            # BUG theres prolly a big in here somewhere.
+            # can we resplit aces?
+            elif hand_value == 'A':
+                hand_type = 'soft'
+                hand_value = '12'
+                action = 'HIT'
             else:
                 player.split_hand(current_hand_index)
-                player.receive_card(self.shoe.deal_one(), current_hand_index)
-                player.receive_card(self.shoe.deal_one(), current_hand_index + 1)
+                self.deal_card(player, current_hand_index)
+                self.deal_card(player, current_hand_index + 1)
                 self.play_turn(player, current_hand_index)
                 self.play_turn(player, current_hand_index + 1)
 
                 return
+
+        # print(f"Running count is: {self.running_count},\tTrue count is: {self.true_count},\tPlayer:{player._id} has a {hand_type} {hand_value} with a dealer upcard of {self.dealer.get_up_card()} and should {action}")
 
         # no double after split
         if action == 'DOUBLE':
@@ -342,17 +349,13 @@ class Table:
             else:
                 action = 'HIT'
 
-
         if action == 'HIT':
-            player.receive_card(self.shoe.deal_one(), current_hand_index)
+            self.deal_card(player, current_hand_index)
             self.play_turn(player, current_hand_index)
 
             return
 
         if action == 'STAND':
             return
-
-
-
 
         raise GameLogicError('This error should never be reached. If it is, then oopsies...')
