@@ -23,8 +23,8 @@ deck_pen = 0.75
 min_bet = 10
 max_bet = 1000
 
-total_rounds_played = 100000
-start_stack_size = 100000
+total_rounds_played = 200000
+start_stack_size = 25000
 betting_units = 25
 
 game = Table(num_decks, deck_pen, min_bet, max_bet)

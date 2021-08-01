@@ -8,7 +8,7 @@ import basic_strategy as bs
 import count_map as cm
 
 MIN_NUM_BETTING_UNITS_ALLOWED = 4
-MAX_NUM_OF_SPLITS_ALLOWED = 3
+MAX_NUM_OF_SPLITS_ALLOWED = 4
 LEAVE_THE_TABLE_ON_THIS_COUNT_TRUE_COUNT = -2
 
 #####################
@@ -17,9 +17,14 @@ LEAVE_THE_TABLE_ON_THIS_COUNT_TRUE_COUNT = -2
 #  remove player from table if they bankrupt instead of throwing an error
 #
 # - Make it so the dealer hits on a soft 17 to better match vegas rules
+#
 # - Allow doubledown after split
+#   This would me completely changing how payments works.
+#   Might need to create a list of player bets wrt player hands
+#
 # - Players currently bet their base betting_unit instead of table minimum at true count of 1 and below,
 #   so we need an option to force betting the table minimum instead of base betting unit.
+#
 # - Add option to leave the table when the true count reaches a certain optinal number
 #   Just create a new shoe in this case
 #   implement surrendering
@@ -174,6 +179,7 @@ class Table:
                 elif player.has_one_hand():
                     hand_outcome = player.get_hand(0).get_hand_result(self.dealer.get_hand())
                     if hand_outcome == 'blackjack':
+                        # pays out 3 to 2
                         player.give_money_to_player(2.5 * player.curr_bet)
                         continue
                     if hand_outcome == 'win':
@@ -188,8 +194,9 @@ class Table:
                 # split hands
                 # each hand already paid money
                 else:
+                    i = 0
                     for hand in player.hands:
-                        hand_outcome = player.get_hand(0).get_hand_result(self.dealer.get_hand())
+                        hand_outcome = player.get_hand(i).get_hand_result(self.dealer.get_hand())
 
                         if hand_outcome == 'win':
                             player.give_money_to_player(2 * player.curr_bet)
@@ -200,6 +207,7 @@ class Table:
                         if hand_outcome == 'push':
                             player.give_money_to_player(player.curr_bet)
                             continue
+                        i +=1
 
     def deal_inital_round(self):
         self.clear_table()

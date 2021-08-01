@@ -119,16 +119,16 @@ class Hand:
         else:
             player_hand_value = int((self.get_hand_value())[1])
 
+        if self.is_blackjack():
+            if dealer_hand.is_blackjack():
+                return 'push'
+            return 'blackjack'
+
         if player_hand_value > 21:
             return 'lose'
 
         if dealer_hand_value > 21:
             return 'win'
-
-        if self.is_blackjack():
-            if dealer_hand.is_blackjack():
-                return 'push'
-            return 'blackjack'
 
         if player_hand_value == dealer_hand_value:
             return 'push'

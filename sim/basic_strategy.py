@@ -6,6 +6,7 @@ from actions import Actions
 
 # SURRENDER is not implemented yet
 
+# Basic strategy when dealer stands on a soft 17
 # (player_hand_value, dealer_upcard)
 def get_basic_strategy():
     return {
@@ -120,7 +121,7 @@ def get_basic_strategy():
             ('11', 'J'): Actions.DOUBLE.name,
             ('11', 'Q'): Actions.DOUBLE.name,
             ('11', 'K'): Actions.DOUBLE.name,
-            ('11', 'A'): Actions.DOUBLE.name,
+            ('11', 'A'): Actions.HIT.name,
 
             ('12', '2'): Actions.HIT.name,
             ('12', '3'): Actions.HIT.name,
@@ -349,7 +350,7 @@ def get_basic_strategy():
             ('17', 'K'): Actions.HIT.name,
             ('17', 'A'): Actions.HIT.name,
 
-            ('18', '2'): Actions.DOUBLE.name,
+            ('18', '2'): Actions.STAND.name,
             ('18', '3'): Actions.DOUBLE.name,
             ('18', '4'): Actions.DOUBLE.name,
             ('18', '5'): Actions.DOUBLE.name,
@@ -367,7 +368,7 @@ def get_basic_strategy():
             ('19', '3'): Actions.STAND.name,
             ('19', '4'): Actions.STAND.name,
             ('19', '5'): Actions.STAND.name,
-            ('19', '6'): Actions.DOUBLE.name,
+            ('19', '6'): Actions.STAND.name,
             ('19', '7'): Actions.STAND.name,
             ('19', '8'): Actions.STAND.name,
             ('19', '9'): Actions.STAND.name,
