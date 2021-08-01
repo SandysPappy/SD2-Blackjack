@@ -17,10 +17,10 @@ game = Table(num_decks, deck_pen, min_bet, max_bet)
 def profit_percent(begin_ammount, end_ammount):
     return ((end_ammount - begin_ammount) / end_ammount) * 100
 
-player1 = Player(69, 10000, 5)
-player2 = Player(3, 10000, 5)
-player3 = Player(9, 10000, 5)
-player6 = Player(40, 10000, 5)
+player1 = Player(1, 100000, 5)
+player2 = Player(2, 100000, 5)
+player3 = Player(3, 100000, 5)
+player6 = Player(4, 100000, 5)
 
 player1.take_seat(0, game)
 player2.take_seat(5, game)
@@ -39,5 +39,9 @@ game.play_n_rounds(total_rounds_played)
 print(game)
 
 print(f"After {total_rounds_played} rounds played")
+
 print(f"Player1 started with {player1_original_stack} and ended with {player1.stack_size}")
-print(f"Thats a PROFIT OF {profit_percent(player1_original_stack, player1.stack_size)}%!!!!")
+print(f"Thats a change of {round(profit_percent(player1_original_stack, player1.stack_size), 2)}%")
+
+print(f"Player2 started with {player2_original_stack} and ended with {player2.stack_size}")
+print(f"Thats a change of {round(profit_percent(player2_original_stack, player2.stack_size), 2)}%")

@@ -27,8 +27,10 @@ class Player():
         self.doubled_this_round = False
 
         # defaults to a '1-8' bet spread
-        if bet_spread_type == '1-8' or bet_spread_type == None:
+        if bet_spread_type == None or bet_spread_type == '1-8':
             self.bet_spread_type = '1-8'
+        elif bet_spread_type == 'flat_bet':
+            self.bet_spread_type = bet_spread_type
         else:
             raise UnimplementedBetSpread(f"Sorry, we haven't implemented this bet spread yet, you gave '{bet_spread_type}' for player {self._id}")
 
@@ -57,7 +59,8 @@ class Player():
             raise CannotSplitHand(f"cannot resplit aces, they should only get 1 card after splitting once")
         self.times_split += 1
 
-        self.pay(self.curr_bet)
+        # needs to take money from player, not pay them
+        self.take_money_from_player(self.curr_bet)
 
         card1 = hand_to_split.hand[0]
         card2 = hand_to_split.hand[1]
@@ -83,10 +86,11 @@ class Player():
         self.doubled_this_round = False
         self.times_split = 0
 
-    def pay(self, ammount):
+    # horrible name, pay who?
+    def give_money_to_player(self, ammount):
         self.stack_size += ammount
 
-    def take(self, ammount):
+    def take_money_from_player(self, ammount):
         self.stack_size -= ammount
 
     def get_hand(self, index):
@@ -97,7 +101,7 @@ class Player():
 
     def place_bet(self, true_count):
         self.curr_bet = self.get_what_to_bet(true_count)
-        self.take(self.curr_bet)
+        self.take_money_from_player(self.curr_bet)
 
     # overwrites player index, be careful
     def take_seat(self, index, table):
@@ -117,3 +121,5 @@ class Player():
             if true_count < 4:
                 return 3*self.betting_unit
             return 4*self.betting_unit
+        if self.bet_spread_type == 'flat_bet':
+            return self.betting_unit

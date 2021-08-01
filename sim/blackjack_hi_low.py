@@ -13,8 +13,19 @@ MAX_NUM_OF_SPLITS_ALLOWED = 3
 #####################
 # TODO
 #
-# Make it so the dealer hits on a soft 17
-# Allow doubledown after split
+#   Rewrite the entire play_round and play_turn.
+#   Basically need to rewrite this whole class lmao
+#
+#   rename the take and pay functions
+#
+# - Make it so the dealer hits on a soft 17
+# - Allow doubledown after split
+# - Players currently bet their base betting_unit instead of table minimum at true count of 1 and below,
+#   so we need an option to force betting the table minimum instead of base betting unit.
+# - Add option to leave the table when the true count reaches a certain optinal number
+#   Just create a new shoe in this case
+#   implement surrendering
+#
 #
 #####################
 
@@ -111,9 +122,13 @@ class Table:
         for i in range(n):
             self.play_round()
 
+    # this needs to play_all_player_turns and play_dealer_turn cannot
+    # be different functions if we want to allow for people to take insurance
+    # after the dealer checks for blackjack
+    # honestly, need to rewrite this whole thing from stratch
     def play_round(self):
         if self.has_no_players():
-            raise NoPlayersError("All players must have bankrupted")
+            raise NoPlayersError("No players have sat at the table")
 
         self.set_all_player_bets()
         self.deal_inital_round()
@@ -150,23 +165,24 @@ class Table:
 
                     # (recall we subtracted 2*player.curr_bet at this point)
                     if hand_outcome == 'win':
-                        player.pay(4*player.curr_bet)
+                        player.give_money_to_player(4*player.curr_bet)
 
                     if hand_outcome == 'push':
-                        player.pay(2*player.curr_bet)
+                        player.give_money_to_player(2*player.curr_bet)
 
                 elif player.has_one_hand():
                     hand_outcome = player.get_hand(0).get_hand_result(self.dealer.get_hand())
                     if hand_outcome == 'blackjack':
-                        player.pay(2.5 * player.curr_bet)
+                        player.give_money_to_player(2.5 * player.curr_bet)
                         continue
                     if hand_outcome == 'win':
-                        player.pay(2 * player.curr_bet)
+                        player.give_money_to_player(2 * player.curr_bet)
                         continue
+                    # the player already paid their bet, so they dont get anything back
                     if hand_outcome == 'lose':
                         continue
                     if hand_outcome == 'push':
-                        player.pay(player.curr_bet)
+                        player.give_money_to_player(player.curr_bet)
                         continue
                 # split hands
                 # each hand already paid money
@@ -175,12 +191,13 @@ class Table:
                         hand_outcome = player.get_hand(0).get_hand_result(self.dealer.get_hand())
 
                         if hand_outcome == 'win':
-                            player.pay(2 * player.curr_bet)
+                            player.give_money_to_player(2 * player.curr_bet)
                             continue
+                        # remember, they already paid money, so they just dont get any back
                         if hand_outcome == 'lose':
                             continue
                         if hand_outcome == 'push':
-                            player.pay(player.curr_bet)
+                            player.give_money_to_player(player.curr_bet)
                             continue
 
 
@@ -264,7 +281,7 @@ class Table:
             # raises double flag for pay event
             if action == 'DOUBLE':
                 player.doubled_this_round = True
-                player.pay(player.curr_bet)
+                player.take_money_from_player(player.curr_bet)
                 player.receive_card(self.shoe.deal_one())
                 return
 
