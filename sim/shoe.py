@@ -35,6 +35,7 @@ class Shoe:
         self.cut_card_reached = False
         self.decks_left = self.get_decks_left()
 
+
     def __str__(self):
         return str(self.deck)
 

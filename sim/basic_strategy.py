@@ -264,6 +264,21 @@ def get_basic_strategy():
         },
 
         'soft': {
+
+            ('12', '2'): Actions.HIT.name,
+            ('12', '3'): Actions.HIT.name,
+            ('12', '4'): Actions.HIT.name,
+            ('12', '5'): Actions.HIT.name,
+            ('12', '6'): Actions.HIT.name,
+            ('12', '7'): Actions.HIT.name,
+            ('12', '8'): Actions.HIT.name,
+            ('12', '9'): Actions.HIT.name,
+            ('12', '10'): Actions.HIT.name,
+            ('12', 'J'): Actions.HIT.name,
+            ('12', 'Q'): Actions.HIT.name,
+            ('12', 'K'): Actions.HIT.name,
+            ('12', 'A'): Actions.HIT.name,
+
             ('13', '2'): Actions.HIT.name,
             ('13', '3'): Actions.HIT.name,
             ('13', '4'): Actions.HIT.name,
@@ -393,8 +408,8 @@ def get_basic_strategy():
         },
 
         'pair': {
-            ('2', '2'): Actions.SPLIT.name,
-            ('2', '3'): Actions.SPLIT.name,
+            ('2', '2'): Actions.HIT.name,
+            ('2', '3'): Actions.HIT.name,
             ('2', '4'): Actions.SPLIT.name,
             ('2', '5'): Actions.SPLIT.name,
             ('2', '6'): Actions.SPLIT.name,
@@ -407,8 +422,8 @@ def get_basic_strategy():
             ('2', 'K'): Actions.HIT.name,
             ('2', 'A'): Actions.HIT.name,
 
-            ('3', '2'): Actions.SPLIT.name,
-            ('3', '3'): Actions.SPLIT.name,
+            ('3', '2'): Actions.HIT.name,
+            ('3', '3'): Actions.HIT.name,
             ('3', '4'): Actions.SPLIT.name,
             ('3', '5'): Actions.SPLIT.name,
             ('3', '6'): Actions.SPLIT.name,
@@ -424,8 +439,8 @@ def get_basic_strategy():
             ('4', '2'): Actions.HIT.name,
             ('4', '3'): Actions.HIT.name,
             ('4', '4'): Actions.HIT.name,
-            ('4', '5'): Actions.SPLIT.name,
-            ('4', '6'): Actions.SPLIT.name,
+            ('4', '5'): Actions.HIT.name,
+            ('4', '6'): Actions.HIT.name,
             ('4', '7'): Actions.HIT.name,
             ('4', '8'): Actions.HIT.name,
             ('4', '9'): Actions.HIT.name,
@@ -449,7 +464,7 @@ def get_basic_strategy():
             ('5', 'K'): Actions.HIT.name,
             ('5', 'A'): Actions.HIT.name,
 
-            ('6', '2'): Actions.SPLIT.name,
+            ('6', '2'): Actions.HIT.name,
             ('6', '3'): Actions.SPLIT.name,
             ('6', '4'): Actions.SPLIT.name,
             ('6', '5'): Actions.SPLIT.name,

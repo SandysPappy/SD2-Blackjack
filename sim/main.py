@@ -1,49 +1,43 @@
 from blackjack_hi_low import Table
 from player import Player
 from dealer import Dealer
-from bet_spread import get_what_to_bet
+from card import Card
+from hand import Hand
 
 num_decks = 8
 deck_pen = 0.75
 min_bet = 10
 max_bet = 1000
+total_rounds_played = 10000
 
 hands_per_hour = 100
 
 game = Table(num_decks, deck_pen, min_bet, max_bet)
-#
-# init_players = [(0, 5000), (9, 10000), (2, 4000)]
-# player_list = Table.create_player_list(init_players)
-#
-# i = 0
-# for player in player_list:
-#     game.take_seat(i, player)
-#     i += 1
-#
-# game.take_seat(0, Player(6, 436))
-# game.take_seat(1, Player(6, 543))
 
-player = Player(69, 5000)
-player.take_seat(0, game)
+def profit_percent(begin_ammount, end_ammount):
+    return (end_ammount / begin_ammount) * 100 - 100
 
-for i in range(79):
-    game.deal_inital_round()
+player1 = Player(69, 10000, 10)
+player2 = Player(3, 10000, 10)
+player3 = Player(9, 10000, 10)
+player6 = Player(40, 10000, 10)
 
+player1.take_seat(0, game)
+player2.take_seat(5, game)
+player3.take_seat(2, game)
+player6.take_seat(3, game)
 
-# for i in range(200):
-#     player.receive_card(game.shoe.deal_one())
-#     player.receive_card(game.shoe.deal_one())
-#
-#     game.dealer.receive_card(game.shoe.deal_one())
-#     game.dealer.receive_card(game.shoe.deal_one())
-#
-#     hand_result = player.get_hand().get_hand_result(game.dealer.get_hand())
-#     print(f"dealer hand: {game.dealer.hand.get_hand_value()}")
-#     print(f"player hand: {player.hand.get_hand_value()}")
-#     print(hand_result)
-#
-#     game.dealer.clear_hand()
-#     player.clear_hand()
-
+player1_original_stack = player1.stack_size
+player2_original_stack = player2.stack_size
+player3_original_stack = player3.stack_size
+player6_original_stack = player6.stack_size
 
 print(game)
+
+game.play_n_rounds(total_rounds_played)
+
+print(game)
+
+print(f"After {total_rounds_played} rounds played")
+print(f"Player1 started with {player1_original_stack} and ended with {player1.stack_size}")
+print(f"Thats a PROFIT OF {profit_percent(player1_original_stack, player1.stack_size)}%!!!!!!")

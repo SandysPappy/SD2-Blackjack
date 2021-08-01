@@ -16,6 +16,15 @@ class Hand:
     def __repr__(self):
         return f"<Hand {self.hand}>"
 
+    # note: must be EXACT same hand, so order matters
+    def __eq__(self, other):
+        if isinstance(other, Hand):
+            return self.hand == other.hand
+        return false
+
+    def delete_hand(self):
+        self = None
+
     def add_card(self, card):
         self.hand.append(card)
 
@@ -34,6 +43,16 @@ class Hand:
         if self.hand[0].card_face != self.hand[1].card_face:
             return False
         return True
+
+    def get_pairs_hard_hand_value(self):
+        if self.is_pair():
+            if self.hand[0].card_face == 'A':
+                return 12
+            if self.hand[0].card_face == 'K' or self.hand[0].card_face == 'Q' or self.hand[0].card_face == 'J':
+                return 20
+            return 2*int(self.hand[0].card_face)
+
+        raise GameLogicError('Nonpair hand cannot be converted to hard value here')
 
     def is_blackjack(self):
         if len(self.hand) != 2:
