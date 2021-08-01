@@ -26,10 +26,11 @@ class Player():
         self.times_split = 0
         self.doubled_this_round = False
 
-        if bet_spread_type == None:
+        # defaults to a '1-8' bet spread
+        if bet_spread_type == '1-8' or bet_spread_type == None:
             self.bet_spread_type = '1-8'
         else:
-            self.bet_spread_type = bet_spread_type
+            raise UnimplementedBetSpread(f"Sorry, we haven't implemented this bet spread yet, you gave '{bet_spread_type}' for player {self._id}")
 
     def __str__(self):
         return f"player_id:{self._id}, stack_size:{self.stack_size}, hand(s):{self.hands}, num_splits:{self.times_split }, betting_unit:{self.betting_unit}, curr_bet:{self.curr_bet}, bet_spread_type:'{self.bet_spread_type}'"
@@ -116,4 +117,3 @@ class Player():
             if true_count < 4:
                 return 3*self.betting_unit
             return 4*self.betting_unit
-        raise UnimplementedBetSpread(f"Sorry, we haven't implemented this bet spreads yet, you gave {bet_spread}")
