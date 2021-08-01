@@ -22,7 +22,7 @@ class Card:
     def __eq__(self, other):
         if isinstance(other, Card):
             return self.card_face == other.card_face and self.suit == other.suit
-        return false
+        return False
 
 
     def is_cut_card(self):

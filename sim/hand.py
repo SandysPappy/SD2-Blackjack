@@ -20,7 +20,7 @@ class Hand:
     def __eq__(self, other):
         if isinstance(other, Hand):
             return self.hand == other.hand
-        return false
+        return False
 
     def delete_hand(self):
         self = None

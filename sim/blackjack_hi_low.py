@@ -10,6 +10,14 @@ import count_map as cm
 MIN_NUM_BETTING_UNITS_ALLOWED = 4
 MAX_NUM_OF_SPLITS_ALLOWED = 3
 
+#####################
+# TODO
+#
+# Make it so the dealer hits on a soft 17
+# Allow doubledown after split
+#
+#####################
+
 ####################################################################
 # DO NOT CHANGE THESE VALUES YET
 # they do not currently work if you change them
@@ -107,8 +115,6 @@ class Table:
         if self.has_no_players():
             raise NoPlayersError("All players must have bankrupted")
 
-        # bug here, what happens when player bets are set, but no
-        # the shoe and count haven't been updated
         self.set_all_player_bets()
         self.deal_inital_round()
         self.play_all_player_turns()
@@ -118,11 +124,6 @@ class Table:
         # deals with paying based on player hands
         # dont forget, split aces are not considered blackjack, first check for players outside of index > 6
         self.pay_out_players()
-
-        if self.shoe.cut_card_reached:
-            self.replace_shoe(self.num_decks, self.deck_pen)
-            self.true_count = 0
-            self.running_count = 0
 
     def has_no_players(self):
         for player in self.player_list:
@@ -200,6 +201,11 @@ class Table:
             if player:
                 player.clear_hands()
 
+        if self.shoe.cut_card_reached:
+            self.replace_shoe(self.num_decks, self.deck_pen)
+            self.true_count = 0
+            self.running_count = 0
+
 
     def replace_shoe(self, num_decks, deck_pen):
         self.num_decks = num_decks
@@ -222,8 +228,12 @@ class Table:
     # possible error: If a player runs out of money, this will not work correctly
     # Therefore, a BankruptPlayer error is thrown when any player's stack is too small
     def play_turn(self, player, current_hand_index=None):
+
         # when player currently has no split hands
         if current_hand_index is None:
+
+
+
             hand_type, hand_value = player.get_hand(0).get_hand_value()
 
             # only occurs when dealt aces initally, and it also overwritten but whatever
@@ -234,10 +244,9 @@ class Table:
 
             action = self.strategy[hand_type][(hand_value, self.dealer.get_up_card().card_face)]
 
-            print(f"Player:{player._id} has a {hand_type} {hand_value} where current_bet is {player.curr_bet} and true_count is {self.true_count} with a dealer upcard of {self.dealer.get_up_card()} and should {action}")
+            # print(f"Player:{player._id} has a {hand_type} {hand_value} with a dealer upcard of {self.dealer.get_up_card()} and should {action}")
 
             if action == 'SPLIT':
-                # pays for extra hand in this call
                 player.split_hand(0)
 
                 player.receive_card(self.shoe.deal_one(), 0)
@@ -315,6 +324,7 @@ class Table:
                     action = 'HIT'
             else:
                 action = 'HIT'
+
 
         if action == 'HIT':
             player.receive_card(self.shoe.deal_one(), current_hand_index)
