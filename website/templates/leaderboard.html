@@ -1,0 +1,30 @@
+<!--uses the base.html template, everything in the block content block will appear below the navbar-->
+{% extends "base.html" %} 
+{% block title %}Leaderboard{% endblock %}
+
+{% block content %}
+<h1 align="center">Leaderboard</h1>
+
+<!--TODO
+* create 3 columns
+* label columns Rank: Users: and Points:
+* add scroll bar to leaderboard
+-->
+
+<div>
+{{ player }}
+
+
+</div>
+
+<h3 align="center"> {{ user.username }}: Rank {{ rank }} </h3>
+<ol class="list-group">
+    {% for user in users %}
+    <li> 
+        {{ user.username }}
+        {{ user.points }}
+    </li>
+    {% endfor %}
+</ol>
+
+{% endblock %}
