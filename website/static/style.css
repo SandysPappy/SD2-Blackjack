@@ -1,0 +1,33 @@
+/* Leaderboard functions*/
+.my-custom-scrollbar {
+    position: relative;
+    height: 75%;
+    overflow: auto;
+}
+
+.table-wrapper-scroll-y {
+    display: block;
+}
+
+/* Home Page Functions */
+
+#settingSlider {
+    float: left;
+    background: darkcyan;
+    width: 25%;
+    height: 600px;
+}
+
+#gameScreen {
+    float: left;
+    background: darkblue;
+    width: 50%;
+    height: 600px;
+}
+
+#performanceMetrics {
+    float: right;
+    background: darkcyan;
+    width: 25%;
+    height: 600px;
+}

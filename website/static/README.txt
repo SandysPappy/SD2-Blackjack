@@ -1,0 +1,1 @@
+The static folder contains images, style sheets, and custom javascript used for the project.
