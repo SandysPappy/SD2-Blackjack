@@ -1,0 +1,40 @@
+<!--uses the base.html template, everything in the block content block will appear below the navbar-->
+{% extends "base.html" %} 
+{% block title %}Leaderboard{% endblock %}
+
+{% block content %}
+<h1 align="center">Leaderboard</h1>
+
+<!--TODO
+* make leaderboard page responsive vertically
+-->
+
+<!--test that tyler wanted to do, doesnt do anything-->
+<div>
+{{ player }}
+</div>
+
+<!--displays users rank at top of page-->
+<h3 align="center"> {{ user.username }}: Rank {{ rank }} </h3>
+<!--leaderboard table-->
+<div class="table-wrapper-scroll-y my-custom-scrollbar" style="margin:auto; width:80%;">
+    <table class="table table-bordered table-striped table-dark mb-0">
+        <thead class="thead-dark">
+            <tr>
+                <th width="%25" scope="col">Rank</th>
+                <th width="%50" class="text-center" scope="col">Username</th>
+                <th width="%25" scope="col">Points</th>
+            </tr>
+        </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <th scope="row">{{ users.index(user) + 1 }}</th>
+                    <td align="center">{{ user.username }}</td>
+                    <td>{{ user.points }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+    </table>
+</div>
+{% endblock %}
