@@ -66,4 +66,28 @@ def setting_slider():
 
     return res
 
+# everything below here is related to the Information pages
 
+@views.route('/definitions/')
+def definitionsPage():
+    return render_template("/InformationPages/definitions.html", user=current_user)
+
+@views.route('/etiquette/')
+def etiquettePage():
+    return render_template("/InformationPages/etiquette.html", user=current_user)
+
+@views.route('/strategy/')
+def strategyPage():
+    return render_template("/InformationPages/strategy.html", user=current_user)
+
+@views.route('/counting/')
+def countingPage():
+    return render_template("/InformationPages/counting.html", user=current_user)
+
+@views.route('/deviations/')
+def deviationsPage():
+    return render_template("/InformationPages/deviations.html", user=current_user)
+
+@views.route('/betspreads/')
+def betSpreadPage():
+    return render_template("/InformationPages/betspreads.html", user=current_user)
