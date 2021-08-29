@@ -3,19 +3,18 @@
 {% block title %}Leaderboard{% endblock %}
 
 {% block content %}
-<h1 align="center">Leaderboard</h1>
 
 <!--TODO
 * make leaderboard page responsive vertically
+* make leaderboard title, and player info centered
 -->
 
-<!--test that tyler wanted to do, doesnt do anything-->
-<div>
-{{ player }}
+
+<div class="center">
+    <h1>Leaderboard</h1>
+    <h3>{{ user.username }}: Rank {{ rank }} </h3>
 </div>
 
-<!--displays users rank at top of page-->
-<h3 align="center"> {{ user.username }}: Rank {{ rank }} </h3>
 <!--leaderboard table-->
 <div class="table-wrapper-scroll-y my-custom-scrollbar" style="margin:auto; width:80%;">
     <table class="table table-bordered table-striped table-dark mb-0">
@@ -30,7 +29,7 @@
                 {% for user in users %}
                 <tr>
                     <th scope="row">{{ users.index(user) + 1 }}</th>
-                    <td align="center">{{ user.username }}</td>
+                    <td style="text-align:center">{{ user.username }}</td>
                     <td>{{ user.points }}</td>
                 </tr>
                 {% endfor %}
